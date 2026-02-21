@@ -10,6 +10,7 @@ import { useParking } from '@/contexts/ParkingContext';
 import { useToast } from '@/hooks/use-toast';
 import { Vehicle, ParkingSession } from '@/types/parking';
 import { HistoryCard } from '@/components/parking/HistoryCard';
+import { BookingCard } from '@/components/parking/BookingCard';
 
 // --- Sophisticated UI Utility Components ---
 
@@ -153,6 +154,8 @@ export default function HomePage() {
     activeSession,
     history,
     setHistory,
+    bookings,
+    cancelBooking,
   } = useParking();
 
   useEffect(() => {
@@ -391,6 +394,36 @@ export default function HomePage() {
             </Card>
           </TiltCard>
         </motion.div>
+
+        {/* Scheduled Parking Section */}
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+        >
+          {bookings && bookings.filter(b => b.status === 'upcoming' || b.status === 'active').length > 0 && (
+            <>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-black text-foreground tracking-tighter">Scheduled</h2>
+              </div>
+
+              <div className="space-y-4 mb-8">
+                <AnimatePresence mode="popLayout">
+                  {bookings
+                    .filter(b => b.status === 'upcoming' || b.status === 'active')
+                    .map((booking, index) => (
+                      <BookingCard
+                        key={booking.id}
+                        booking={booking}
+                        index={index}
+                        onCancel={cancelBooking}
+                      />
+                    ))}
+                </AnimatePresence>
+              </div>
+            </>
+          )}
+        </motion.section>
 
         {/* My Vehicles Section */}
         <motion.section

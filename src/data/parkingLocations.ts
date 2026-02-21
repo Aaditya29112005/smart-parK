@@ -46,7 +46,7 @@ export const MOCK_PARKING_LOCATIONS: ParkingLocation[] = [
         },
         availability: { total: 500, available: 45 },
         rating: 4.5,
-        image: '/parking-garage.jpg',
+        image: 'https://images.unsplash.com/photo-1590674899484-d5640e854abe?q=80&w=2667&auto=format&fit=crop', // Modern indoor parking
         type: 'garage',
     },
     {
@@ -67,7 +67,7 @@ export const MOCK_PARKING_LOCATIONS: ParkingLocation[] = [
         },
         availability: { total: 300, available: 12 },
         rating: 4.2,
-        image: '/parking-lot.jpg',
+        image: 'https://images.unsplash.com/photo-1573348722427-f1d6819fdf98?q=80&w=2574&auto=format&fit=crop', // Outdoor parking lot
         type: 'garage',
     },
     {
@@ -88,7 +88,7 @@ export const MOCK_PARKING_LOCATIONS: ParkingLocation[] = [
         },
         availability: { total: 50, available: 8 },
         rating: 3.8,
-        image: '/street-parking.jpg',
+        image: 'https://images.unsplash.com/photo-1506521781263-d8422e82f27a?q=80&w=2670&auto=format&fit=crop', // Street parking
         type: 'street',
     },
     {
@@ -109,7 +109,7 @@ export const MOCK_PARKING_LOCATIONS: ParkingLocation[] = [
         },
         availability: { total: 1000, available: 150 },
         rating: 4.8,
-        image: '/airport-parking.jpg',
+        image: 'https://images.unsplash.com/photo-1470224114660-3f6686c562eb?q=80&w=2608&auto=format&fit=crop', // Large multi-level parking
         type: 'garage',
     },
     {
@@ -130,7 +130,7 @@ export const MOCK_PARKING_LOCATIONS: ParkingLocation[] = [
         },
         availability: { total: 100, available: 22 },
         rating: 4.0,
-        image: '/parking-lot.jpg',
+        image: 'https://images.unsplash.com/photo-1604063155787-8fbaf5cde9b7?q=80&w=2574&auto=format&fit=crop', // Standard lot
         type: 'lot',
     },
     {
@@ -151,7 +151,7 @@ export const MOCK_PARKING_LOCATIONS: ParkingLocation[] = [
         },
         availability: { total: 400, available: 65 },
         rating: 4.6,
-        image: '/parking-garage.jpg',
+        image: 'https://images.unsplash.com/photo-1573348722427-f1d6819fdf98?q=80&w=2574&auto=format&fit=crop', // Mall parking
         type: 'garage',
     },
 ];

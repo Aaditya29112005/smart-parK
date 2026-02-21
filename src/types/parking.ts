@@ -65,6 +65,24 @@ export interface ParkingSession {
   slot?: ParkingSlot;
 }
 
+export type BookingStatus = 'upcoming' | 'active' | 'completed' | 'cancelled';
+
+export interface Booking {
+  id: string;
+  user_id: string;
+  location_id: string; // Linking to ParkingLot
+  location_name: string;
+  location_address: string;
+  vehicle_id: string;
+  vehicle_number: string;
+  start_time: string;
+  end_time: string;
+  duration_hours: number;
+  total_price: number;
+  status: BookingStatus;
+  created_at: string;
+}
+
 export const VEHICLE_RATES: Record<VehicleType, number> = {
   bike: 10,
   car: 20,

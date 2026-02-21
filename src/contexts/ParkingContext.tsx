@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { Vehicle, ParkingSlot, ParkingSession, ParkingLot, User, Driver, SystemLog, ValetAssignment, ValetStatus } from '@/types/parking';
+import { Vehicle, ParkingSlot, ParkingSession, ParkingLot, User, Driver, SystemLog, ValetAssignment, ValetStatus, Booking } from '@/types/parking';
 import { getCurrentUser, onAuthStateChange } from '@/services/authService';
 
 interface ParkingContextType {
@@ -20,11 +20,6 @@ interface ParkingContextType {
   addParkingLot: (lot: ParkingLot) => void;
   updateParkingLot: (lot: ParkingLot) => void;
   deleteParkingLot: (id: string) => void;
-  drivers: Driver[];
-  setDrivers: (drivers: Driver[]) => void;
-  globalTickets: ParkingSession[];
-  setGlobalTickets: (tickets: ParkingSession[]) => void;
-  systemLogs: SystemLog[];
   addLog: (log: Omit<SystemLog, 'id' | 'timestamp'>) => void;
   demandWeights: Record<string, number>;
   setDemandWeights: (weights: Record<string, number>) => void;
@@ -34,6 +29,9 @@ interface ParkingContextType {
   requestValet: (assignment: Omit<ValetAssignment, 'id' | 'status' | 'timestamp'>) => void;
   registerDriver: (driver: Driver) => void;
   updateValetStatus: (id: string, status: ValetStatus, driverId?: string, slotId?: string, slotName?: string) => void;
+  bookings: Booking[];
+  addBooking: (booking: Booking) => void;
+  cancelBooking: (id: string) => void;
 }
 
 const ParkingContext = createContext<ParkingContextType | undefined>(undefined);
@@ -53,6 +51,29 @@ export function ParkingProvider({ children }: { children: ReactNode }) {
   const [demandWeights, setDemandWeights] = useState<Record<string, number>>({});
   const [isSurgeActive, setIsSurgeActive] = useState(false);
   const [valetAssignments, setValetAssignments] = useState<ValetAssignment[]>([]);
+  const [bookings, setBookings] = useState<Booking[]>([]);
+
+  // Load bookings
+  useEffect(() => {
+    const savedBookings = localStorage.getItem('parking_bookings');
+    if (savedBookings) {
+      setBookings(JSON.parse(savedBookings));
+    }
+  }, []);
+
+  const addBooking = (booking: Booking) => {
+    const updated = [...bookings, booking];
+    setBookings(updated);
+    localStorage.setItem('parking_bookings', JSON.stringify(updated));
+    addLog({ user: user?.name || 'User', action: `Scheduled booking at ${booking.location_name}`, severity: 'low' });
+  };
+
+  const cancelBooking = (id: string) => {
+    const updated = bookings.map(b => b.id === id ? { ...b, status: 'cancelled' as const } : b);
+    setBookings(updated);
+    localStorage.setItem('parking_bookings', JSON.stringify(updated));
+    addLog({ user: user?.name || 'User', action: `Cancelled booking ${id}`, severity: 'medium' });
+  };
 
   // Add Log helper
   const addLog = (logData: Omit<SystemLog, 'id' | 'timestamp'>) => {
@@ -256,6 +277,9 @@ export function ParkingProvider({ children }: { children: ReactNode }) {
         requestValet,
         registerDriver,
         updateValetStatus,
+        bookings,
+        addBooking,
+        cancelBooking,
       }}
     >
       {children}

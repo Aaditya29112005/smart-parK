@@ -14,6 +14,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { AnimatePresence, motion } from 'framer-motion';
+import { ScheduleModal } from '@/components/parking/ScheduleModal';
 
 export default function FindParkingWithMap() {
     const navigate = useNavigate();
@@ -24,6 +25,7 @@ export default function FindParkingWithMap() {
     const [sortBy, setSortBy] = useState<'price' | 'distance' | 'none'>('none');
     const [showHeatmap, setShowHeatmap] = useState(false);
     const [viewMode, setViewMode] = useState<'map' | 'list'>('map');
+    const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
     const { vehicles, isSurgeActive, demandWeights } = useParking();
     // Get user's live location
     useEffect(() => {
@@ -231,9 +233,23 @@ export default function FindParkingWithMap() {
                                             </div>
                                             <div className="flex items-center justify-between mt-auto">
                                                 <span className="text-[15px] font-black text-primary">₹{loc.pricing.hourly}<span className="text-xs opacity-60 font-bold ml-0.5">/hr</span></span>
-                                                <div className="flex items-center gap-1.5 grayscale group-hover:grayscale-0 transition-all">
-                                                    <div className={cn("w-1.5 h-1.5 rounded-full", loc.availability.available > 10 ? "bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]" : "bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.5)]")} />
-                                                    <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{loc.availability.available} slots</span>
+                                                <div className="flex gap-2">
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        className="h-7 px-2 text-[10px] uppercase font-bold tracking-wider border-primary/20 hover:bg-primary/10 hover:text-primary"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            setSelectedLocationId(loc.id);
+                                                            setIsScheduleModalOpen(true);
+                                                        }}
+                                                    >
+                                                        Schedule
+                                                    </Button>
+                                                    <div className="flex items-center gap-1.5 grayscale group-hover:grayscale-0 transition-all">
+                                                        <div className={cn("w-1.5 h-1.5 rounded-full", loc.availability.available > 10 ? "bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]" : "bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.5)]")} />
+                                                        <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{loc.availability.available} slots</span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -452,6 +468,13 @@ export default function FindParkingWithMap() {
                     <VoiceAssistant onCommand={handleVoiceCommand} />
                 </div>
             </div>
+            {selectedLocationId && (
+                <ScheduleModal
+                    isOpen={isScheduleModalOpen}
+                    onClose={() => setIsScheduleModalOpen(false)}
+                    location={MOCK_PARKING_LOCATIONS.find(l => l.id === selectedLocationId)!}
+                />
+            )}
         </MobileLayout >
     );
 }
